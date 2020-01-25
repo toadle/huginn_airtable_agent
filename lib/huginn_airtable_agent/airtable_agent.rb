@@ -8,6 +8,9 @@ module Agents
 
     def default_options
       {
+        api_key: "",
+        app_key: "",
+        table_name: ""
       }
     end
 
@@ -23,7 +26,17 @@ module Agents
 #    def check
 #    end
 
-#    def receive(incoming_events)
-#    end
+    def receive(incoming_events)
+      client = Airtable::Client.new(options[:api_key])
+      table = client.table(options[:app_key], options[:table_name])
+
+      incoming_events.each do |event|
+        record = Airtable::Record.new(event.payload.symbolize_keys)
+        table.create(record)
+      end
+    rescue => e
+      error(e.message)
+      raise
+    end
   end
 end
