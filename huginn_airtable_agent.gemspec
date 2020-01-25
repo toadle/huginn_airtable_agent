@@ -5,13 +5,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |spec|
   spec.name          = "huginn_airtable_agent"
   spec.version       = '0.1'
-  spec.authors       = ["TODO: Write your name"]
-  spec.email         = ["TODO: Write your email address"]
+  spec.authors       = "Tim Adler"
+  spec.email         = "mail@toadle.me"
 
   spec.summary       = %q{Write a short summary, because Rubygems requires one.}
   spec.description   = %q{Write a longer description or delete this line.}
 
-  spec.homepage      = "https://github.com/[my-github-username]/huginn_airtable_agent"
+  spec.homepage      = "https://github.com/toadle/huginn_airtable_agent"
 
   spec.license       = "MIT"
 
@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
 
   spec.add_runtime_dependency "huginn_agent"
+  spec.add_runtime_dependency "airtable"
 end
