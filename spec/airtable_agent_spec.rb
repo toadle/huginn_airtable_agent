@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'huginn_agent/spec_helper'
-require 'airtable'
 
 describe Agents::AirtableAgent do
   before(:each) do

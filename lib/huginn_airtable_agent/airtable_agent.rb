@@ -1,3 +1,5 @@
+require 'airtable'
+
 module Agents
   class AirtableAgent < Agent
     cannot_be_scheduled!
