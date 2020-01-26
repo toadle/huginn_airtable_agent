@@ -1,6 +1,7 @@
 module Agents
   class AirtableAgent < Agent
-    default_schedule '12h'
+    cannot_be_scheduled!
+    cannot_create_events!
 
     description <<-MD
       Add a Agent description here
@@ -15,6 +16,9 @@ module Agents
     end
 
     def validate_options
+      errors.add(:base, "you need to specify the API-Key for your Airtable-Account") unless options['api_key'].present?
+      errors.add(:base, "you need to specify the App-Key for the Workspace which contains your table") unless options['app_key'].present?
+      errors.add(:base, "you need to specify the Table-Name") unless options['table_name'].present?
     end
 
     def working?
