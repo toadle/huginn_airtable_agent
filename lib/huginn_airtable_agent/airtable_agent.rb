@@ -24,9 +24,8 @@ module Agents
     end
 
     def working?
-      # Implement me! Maybe one of these next two lines would be a good fit?
-      # checked_without_error?
-      # received_event_without_error?
+      checked_without_error?
+      received_event_without_error?
     end
 
 #    def check
