@@ -35,20 +35,11 @@ describe Agents::AirtableAgent do
   end
 
   describe "#receive", :vcr do
-    let(:client) { double(Airtable::Client) }
-    let(:table) { double("Table") }
-    let(:record) { double(Airtable::Record) }
-
     it "saves payload to Airtable-Table" do
       event = Event.new
       event.agent = agents(:bob_rain_notifier_agent)
       event.payload = { "Title" => "This is another title", "URL" => "http://example.com" }
       event.save!
-
-      # expect(Airtable::Client).to receive(:new).with("123").and_return(client)
-      # expect(client).to receive(:table).with("abc", "a table name").and_return(table)
-      # expect(Airtable::Record).to receive(:new).with(Title: "This is a title", URL: "http://example.com").and_return(record)
-      # expect(table).to receive(:create).with(record)
 
       Agents::AirtableAgent.async_receive(@agent.id, [event.id])
     end
