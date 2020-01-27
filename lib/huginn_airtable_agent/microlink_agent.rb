@@ -11,6 +11,8 @@ module Agents
 
     def default_options
       {
+        pdf: false,
+        screenshot: false
       }
     end
 
@@ -22,12 +24,9 @@ module Agents
       received_event_without_error?
     end
 
-#    def check
-#    end
-
     def receive(incoming_events)
       incoming_events.each do |event|
-        response = HTTParty.get('https://api.microlink.io?url=' + event.payload["url"])
+        response = HTTParty.get("https://api.microlink.io?pdf=#{options['pdf']}&screenshot=#{options['screenshot']}&url=" + event.payload["url"])
         result = JSON.parse response.body
 
         create_event payload: event.payload.merge(result)
