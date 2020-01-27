@@ -36,7 +36,8 @@ module Agents
       table = client.table(options[:app_key], options[:table_name])
 
       incoming_events.each do |event|
-        record = Airtable::Record.new(event.payload.symbolize_keys)
+        log(event.payload.deep_symbolize_keys)
+        record = Airtable::Record.new(event.payload.deep_symbolize_keys)
         table.create(record)
       end
     rescue => e
