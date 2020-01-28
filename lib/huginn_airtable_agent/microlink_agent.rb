@@ -12,9 +12,14 @@ module Agents
     def default_options
       {
         pdf: false,
-        screenshot: false
+        screenshot: false,
+        merge: false
       }
     end
+
+    form_configurable :pdf, type: :boolean
+    form_configurable :screenshot, type: :boolean
+    form_configurable :merge, type: :boolean
 
     def validate_options
     end
@@ -26,10 +31,15 @@ module Agents
 
     def receive(incoming_events)
       incoming_events.each do |event|
-        response = HTTParty.get("https://api.microlink.io?pdf=#{options['pdf']}&screenshot=#{options['screenshot']}&url=" + event.payload["url"])
+        mo = interpolated(event)
+
+        response = HTTParty.get("https://api.microlink.io?pdf=#{mo['pdf']}&screenshot=#{mo['screenshot']}&url=" + mo["url"])
         result = JSON.parse response.body
 
-        create_event payload: event.payload.merge(result)
+        payload = boolify(mo['merge']) ? event.payload : {}
+        payload.merge!(result)
+
+        create_event payload: payload
       end
     rescue => e
       error(e.message)
