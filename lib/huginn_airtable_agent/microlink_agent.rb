@@ -3,6 +3,8 @@ require 'httparty'
 
 module Agents
   class MicrolinkAgent < Agent
+    include FormConfigurable
+
     cannot_be_scheduled!
 
     description <<-MD
@@ -31,12 +33,10 @@ module Agents
 
     def receive(incoming_events)
       incoming_events.each do |event|
-        mo = interpolated(event)
-
-        response = HTTParty.get("https://api.microlink.io?pdf=#{mo['pdf']}&screenshot=#{mo['screenshot']}&url=" + mo["url"])
+        response = HTTParty.get("https://api.microlink.io?pdf=#{options['pdf']}&screenshot=#{options['screenshot']}&url=" + event.payload["url"])
         result = JSON.parse response.body
 
-        payload = boolify(mo['merge']) ? event.payload : {}
+        payload = boolify(options['merge']) ? event.payload : {}
         payload.merge!(result)
 
         create_event payload: payload

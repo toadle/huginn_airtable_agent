@@ -2,8 +2,6 @@ require 'airtable'
 
 module Agents
   class AirtableAgent < Agent
-    include FormConfigurable
-    
     cannot_be_scheduled!
     cannot_create_events!
 
