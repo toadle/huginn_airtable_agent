@@ -24,7 +24,7 @@ module Agents
 
     def receive(incoming_events)
       incoming_events.each do |event|
-        line = Terrapin::CommandLine.new("youtube-dl", "-j", event.payload["url"])
+        line = Terrapin::CommandLine.new("youtube-dl", "-j", event.payload["url"].to_s)
         result = { "youtube-dl": line.run }
 
         payload = boolify(options['merge']) ? event.payload : {}
@@ -34,7 +34,6 @@ module Agents
       end
     rescue => e
       error(e.message)
-      log(event.payload["url"])
       raise
     end
   end
