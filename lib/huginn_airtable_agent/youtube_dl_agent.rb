@@ -1,9 +1,7 @@
-require 'httparty'
+require 'terrapin'
 
 module Agents
-  class MicrolinkAgent < Agent
-    include FormConfigurable
-
+  class YoutubeDlAgent < Agent
     cannot_be_scheduled!
 
     description <<-MD
@@ -12,15 +10,9 @@ module Agents
 
     def default_options
       {
-        pdf: false,
-        screenshot: false,
         merge: false
       }
     end
-
-    form_configurable :pdf, type: :boolean
-    form_configurable :screenshot, type: :boolean
-    form_configurable :merge, type: :boolean
 
     def validate_options
     end
@@ -32,8 +24,10 @@ module Agents
 
     def receive(incoming_events)
       incoming_events.each do |event|
-        response = HTTParty.get("https://api.microlink.io?pdf=#{options['pdf']}&screenshot=#{options['screenshot']}&url=" + event.payload["url"])
-        result = JSON.parse response.body
+        url = event.payload["url"]
+
+        line = Terrapin::CommandLine.new("youtube-dl", "-j", url)
+        result = { "youtube-dl": line.run }
 
         payload = boolify(options['merge']) ? event.payload : {}
         payload.merge!(result)
