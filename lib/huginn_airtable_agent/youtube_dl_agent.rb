@@ -1,4 +1,5 @@
-require 'terrapin'
+require 'open3'
+require 'json'
 
 module Agents
   class YoutubeDlAgent < Agent
@@ -24,13 +25,12 @@ module Agents
 
     def receive(incoming_events)
       incoming_events.each do |event|
-        line = Terrapin::CommandLine.new("youtube-dl", "-j", event.payload["url"].to_s)
-        result = { "youtube-dl": line.run }
-
-        payload = boolify(options['merge']) ? event.payload : {}
-        payload.merge!(result)
-
-        create_event payload: payload
+        result = Open3.capture2("youtube-dl", "-j", "https://www.youtube.com/watch?v=IJH_RbnrGUs").&first
+        if result
+          payload = boolify(options['merge']) ? event.payload : {}
+          payload.merge!(JSON.parse result)
+          create_event payload: payload
+        end
       end
     rescue => e
       error(e.message)
