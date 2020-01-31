@@ -27,9 +27,14 @@ module Agents
       incoming_events.each do |event|
         result = Open3.capture2("youtube-dl", "-j", event.payload["url"])
         if result[0]
-          payload = boolify(options['merge']) ? event.payload : {}
-          payload.merge!(JSON.parse result[0])
-          create_event payload: payload
+          begin
+            payload = boolify(options['merge']) ? event.payload : {}
+            payload.merge!(JSON.parse result[0])
+            create_event payload: payload
+          rescue => ex
+            error(ex.message)
+            log(result)
+          end
         end
       end
     rescue => e
